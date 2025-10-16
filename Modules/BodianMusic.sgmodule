@@ -2,14 +2,14 @@
 #!desc=解锁波点音乐会员、下载功能以及付费专辑，移除开屏广告、横幅推广、悬浮广告以及商城Tab，建议卸载重装使用。
 #!author=WeiGiegie[https://github.com/WeiGiegie],可莉🅥[https://github.com/luestr/ProxyResource/blob/main/README.md],ZenmoFeiShi[https://github.com/ZenmoFeiShi],wish[https://github.com/mist-whisper]
 #!category=解锁去广告
-#!date=2025-10-14 01:22:00
+#!date=2025-10-16 19:56:30
 
 [Body Rewrite]
-http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/service\/global\/config\/scene '.data.showShopEntry=false|.data.idolTabShow=true'
-http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/service\/home\/index '.data.moduleList |= map(select(.type != 8 and .type != 5 and .type != 1 and .type != 9 and .type != 6 and .type != 4))'
-http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/service\/resource\/recommend\? '.data.resourceList[] |= del(.resource)'
-http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/comments\/v3\/topInfo 'del(.data.putao)'
-http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/voice\/room\/v2\/sidebar '(.data) = {}'
+http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/service\/global\/config\/scene '.data.showShopEntry=false | .data.idolTabShow=true | .'
+http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/service\/home\/index '.data.moduleList |= (if type=="array" then map(select(.type != 8 and .type != 5 and .type != 1 and .type != 9 and .type != 6 and .type != 4)) else . end)'
+http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/service\/resource\/recommend\? 'if .data.resourceList then .data.resourceList |= map(del(.resource)) else . end'
+http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/comments\/v3\/topInfo 'if .data then del(.data.putao) else . end'
+http-response-jq ^https:\/\/bd-api\.kuwo\.cn\/api\/voice\/room\/v2\/sidebar '.data = {}'
 
 [Map Local]
 # 移除开屏广告
