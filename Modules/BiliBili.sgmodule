@@ -1,11 +1,11 @@
 #!name=哔哩哔哩去广告
 #!desc=过滤哔哩哔哩广告、移除青少年模式弹窗和交互式弹幕、移除无用功能和链接跟踪参数。此模块仅建议iOS 15以上设备使用。\n空降助手是第三方提供的功能，依赖于Android版空降助手的服务器数据运作，可能会存在不准确或者失效的问题，此功能与哔哩哔哩官方无关。
-#!author=Maasea[https://github.com/Maasea], RuCu6[https://github.com/RuCu6], kokoryh[https://github.com/kokoryh], 可莉🅥[https://github.com/luestr/ProxyResource/blob/main/README.md],wish[https://github.com/mist-whisper]
+#!author=kokoryh[https://github.com/kokoryh],wish[https://github.com/mist-whisper]
 #!category=去广告
-#!date=2025-11-20 13:43:00
+#!date=2025-11-24 14:45:00
 
-#!arguments=动态最常访问:auto,创作中心:0,过滤置顶评论广告:1,空降助手:bilibili.airborne,净化内嵌网页:bilibili.webpage,日志等级:off
-#!arguments-desc=动态最常访问: [hide, show, auto]\n- show: 始终显示\n- hide: 始终隐藏\n- auto: 仅当列表中存在直播状态时显示\n\n创作中心: [1, 0]\n- 1: 显示\n- 0: 隐藏\n\n过滤置顶评论广告: [1, 0]\n- 1: 开启\n- 0: 关闭\n\n空降助手: 默认开启，配置为"#"时关闭\n\n日志等级: [off, error, warn, info, debug]
+#!arguments=动态最常访问:auto,创作中心:0,过滤置顶评论广告:1,空降助手:bilibili.airborne,优化评论区卡顿:#,日志等级:off
+#!arguments-desc=动态最常访问: [auto, show, hide]\n- auto: 仅当列表中存在直播状态时显示\n- show: 始终显示\n- hide: 始终隐藏\n\n创作中心: [1, 0]\n- 1: 显示\n- 0: 隐藏\n\n过滤置顶评论广告: [1, 0]\n- 1: 开启\n- 0: 关闭\n\n空降助手: 默认开启，配置为"#"时关闭\n\n优化评论区卡顿(BETA): 默认关闭\n\n日志等级: [off, error, warn, info, debug]
 
 [Rule]
 DOMAIN,api.biliapi.com,REJECT,pre-matching,extended-matching
@@ -34,11 +34,13 @@ http-response-jq ^https:\/\/api\.live\.bilibili\.com\/xlive\/(app-interface\/v2\
 [Script]
 {{{空降助手}}} = type=http-request,pattern=^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.community\.service\.dm\.v1\.DM\/DmSegMobile$,argument="{"logLevel":"{{{日志等级}}}"}",requires-body=1,binary-body-mode=1,max-size=-1,engine=webview,script-path=https://raw.githubusercontent.com/kokoryh/Sparkle/master/dist/bilibili.protobuf.request.js
 
+{{{优化评论区卡顿}}} = type=http-request,pattern=^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(app\.viewunite\.v1\.View\/View|main\.community\.reply\.v1\.Reply\/MainList)$,argument="{"purifyComment":{{{过滤置顶评论广告}}},"logLevel":"{{{日志等级}}}"}",requires-body=1,binary-body-mode=1,max-size=-1,engine=webview,script-path=https://raw.githubusercontent.com/kokoryh/Sparkle/master/dist/bilibili.protobuf.request.js
+
 bilibili.skin = type=http-response,pattern=^https:\/\/app\.bilibili\.com\/x\/resource\/show\/skin\?,requires-body=1,max-size=-1,engine=webview,script-path=https://raw.githubusercontent.com/kokoryh/Script/master/js/bili-suit-diy.js
 
 bilibili.json = type=http-response,pattern=^https:\/\/app\.bilibili\.com\/x\/(resource\/show\/tab\/v2|v2\/(splash\/(list|show|event\/list2)|feed\/index(\/story)?|account\/(mine(\/ipad)?|myinfo)))\?,argument="{"showCreatorHub":{{{创作中心}}}}",requires-body=1,max-size=-1,engine=webview,script-path=https://raw.githubusercontent.com/mist-whisper/Script/master/BiliBili/BiliBili.json.js
 
-bilibili.protobuf = type=http-response,pattern=^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(app\.(show\.v1\.Popular\/Index|dynamic\.v2\.Dynamic\/DynAll|view(unite)?\.v1\.View\/(View|ViewProgress|RelatesFeed)|playurl\.v1\.PlayURL\/PlayView|playerunite\.v1\.Player\/PlayViewUnite)|polymer\.app\.search\.v1\.Search\/SearchAll|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|pgc\.gateway\.player\.v2\.PlayURL\/PlayView)$,argument="{"showUpList":"{{{动态最常访问}}}","purifyTopReplies":{{{过滤置顶评论广告}}},"airborne":"{{{空降助手}}}","logLevel":"{{{日志等级}}}"}",requires-body=1,binary-body-mode=1,max-size=-1,engine=webview,script-path=https://raw.githubusercontent.com/kokoryh/Sparkle/master/dist/bilibili.protobuf.response.js
+bilibili.protobuf = type=http-response,pattern=^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(app\.(show\.v1\.Popular\/Index|dynamic\.v2\.Dynamic\/DynAll|view(unite)?\.v1\.View\/(View|ViewProgress|RelatesFeed)|playurl\.v1\.PlayURL\/PlayView|playerunite\.v1\.Player\/PlayViewUnite)|polymer\.app\.search\.v1\.Search\/SearchAll|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|pgc\.gateway\.player\.v2\.PlayURL\/PlayView)$,argument="{"displayUpList":"{{{动态最常访问}}}","purifyComment":{{{过滤置顶评论广告}}},"sponsorBlock":"{{{空降助手}}}","logLevel":"{{{日志等级}}}"}",requires-body=1,binary-body-mode=1,max-size=-1,engine=webview,script-path=https://raw.githubusercontent.com/kokoryh/Sparkle/master/dist/bilibili.protobuf.response.js
 
 [MITM]
 hostname = %APPEND% grpc.biliapi.net, app.bilibili.com, api.bilibili.com, api.live.bilibili.com, line3-h5-mobile-api.biligame.com
