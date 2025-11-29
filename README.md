@@ -2,7 +2,7 @@
 > 禁止在中华人民共和国境内平台公开传播本仓库内的任何内容或以此牟利！
 
 > [!WARNING]
-> 接上游开发者通知，本仓库部分内容不再进行更新，转为线上网站闭源运作。后续可能会对GitHub仓库相关内容进行存档/私有化/删除等操作，如有需要可访问[模块集合站](https://surgelab.wuyra.com)继续使用，但请遵守相关[使用声明](https://surgelab.wuyra.com/Terms)。
+> 接上游开发者通知，本仓库部分内容不再进行更新，转为线上网站闭源运作。后续可能会对GitHub仓库相关内容进行存档/私有化/删除等操作，如有需要可访问[Kelvin Lab](https://kelvinlab.wuyra.com)继续使用，但请遵守相关[服务条款与用户协议](https://kelvinlab.wuyra.com/Terms)。
 > 
 > 亦可前往其他上游作者仓库或模块网站进行合法使用，比如[LoonKissSurge](https://surge.qingr.moe)等，感谢理解。
 
